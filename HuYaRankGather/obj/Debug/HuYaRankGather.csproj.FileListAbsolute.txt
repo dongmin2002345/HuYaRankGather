@@ -1,0 +1,16 @@
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\bin\Debug\HuYaRankGather.exe.config
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\bin\Debug\HuYaRankGather.exe
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\bin\Debug\HuYaRankGather.pdb
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\bin\Debug\Dapper.dll
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\bin\Debug\FluentScheduler.dll
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\bin\Debug\MySql.Data.dll
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\bin\Debug\Newtonsoft.Json.dll
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\bin\Debug\QueryBuilder.dll
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\bin\Debug\SqlKata.Execution.dll
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\obj\Debug\HuYaRankGather.csprojAssemblyReference.cache
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\obj\Debug\HuYaRankGather.MainForm.resources
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\obj\Debug\HuYaRankGather.Properties.Resources.resources
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\obj\Debug\HuYaRankGather.csproj.GenerateResource.cache
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\obj\Debug\HuYaRankGather.csproj.CopyComplete
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\obj\Debug\HuYaRankGather.exe
+D:\GitHub我的项目\HuYaRankGather\HuYaRankGather\obj\Debug\HuYaRankGather.pdb
