@@ -31,6 +31,12 @@ namespace HuYaRankGather
             //FansTask("颜值", 100000);
 
             //FansTask("二次元", 100000);
+
+            //PercentTask("星秀", 100000, 100000);
+
+            //PercentTask("颜值", 100000, 100000);
+
+            //PercentTask("二次元", 100000, 100000);
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -44,14 +50,23 @@ namespace HuYaRankGather
             //每隔5分钟,在线热门榜
             registry.Schedule(() => RankTask()).NonReentrant().ToRunEvery(5).Minutes();
 
+            //每天1:00点执行
+            registry.Schedule(() => FansTask("星秀", 100000)).NonReentrant().ToRunEvery(1).Days().At(1, 0);
+
             //每天2:00点执行
-            registry.Schedule(() => FansTask("星秀", 100000)).NonReentrant().ToRunEvery(1).Days().At(2, 0);
+            registry.Schedule(() => FansTask("颜值", 100000)).NonReentrant().ToRunEvery(1).Days().At(2, 0);
 
             //每天3:00点执行
-            registry.Schedule(() => FansTask("颜值", 100000)).NonReentrant().ToRunEvery(1).Days().At(3, 0);
+            registry.Schedule(() => FansTask("二次元", 100000)).NonReentrant().ToRunEvery(1).Days().At(3, 0);
 
             //每天4:00点执行
-            registry.Schedule(() => FansTask("二次元", 100000)).NonReentrant().ToRunEvery(1).Days().At(4, 0);
+            registry.Schedule(() => PercentTask("颜值", 100000, 100000)).NonReentrant().ToRunEvery(1).Days().At(4, 0);
+
+            //每天4:30点执行
+            registry.Schedule(() => PercentTask("舞蹈", 100000, 100000)).NonReentrant().ToRunEvery(1).Days().At(4, 30);
+
+            //每天5:00点执行
+            registry.Schedule(() => PercentTask("二次元", 100000, 100000)).NonReentrant().ToRunEvery(1).Days().At(5, 0);
 
             JobManager.Initialize(registry);
         }
@@ -176,6 +191,8 @@ namespace HuYaRankGather
                     AppName = item.gameFullName
                 });
             }
+
+            connection.Close();
         }
 
         /// <summary>
@@ -183,7 +200,6 @@ namespace HuYaRankGather
         /// </summary>
         private static void FansTask(string appName, int online)
         {
-            //获取符合条件的主播
             var connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
 
             var db = new QueryFactory(connection, new MySqlCompiler());
@@ -218,6 +234,8 @@ namespace HuYaRankGather
 
                 }
             }
+
+            connection.Close();
         }
 
         private static int GetFans(int roomId)
@@ -249,6 +267,111 @@ namespace HuYaRankGather
                 .Where("RoomId", "=", roomId)
                 .Where("UserFans", "=", 0)
                 .Update(new { UserFans = fans });
+
+            connection.Close();
+        }
+
+        /// <summary>
+        /// 计算当前分类所占比例
+        /// </summary>
+        private static void PercentTask(string appName, int online, int fans)
+        {
+            var connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+
+            var db = new QueryFactory(connection, new MySqlCompiler());
+
+            db.Logger = compiled =>
+            {
+                Console.WriteLine(compiled.ToString());
+            };
+
+            var rooms = db.Query("RankInfo")
+                .Select("RoomId")
+                .SelectRaw("MAX(`RoomOnline`) as RoomOnline")
+                .SelectRaw("MAX(`UserFans`)")
+                .Where("AppName", "=", appName)
+                .GroupBy("RoomId")
+                .HavingRaw($"MAX(`RoomOnline`) >= {online} and MAX(`UserFans`) >= {fans}")
+                .OrderByRaw("MAX(`RoomOnline`) DESC")
+                .Get<Room>();
+
+            foreach (var room in rooms)
+            {
+                try
+                {
+                    //查询分类占百分比
+                    int percent = GetPercent(room.RoomId, appName);
+
+                    //更新百分比
+                    UpdatePercent(room.RoomId, appName, percent);
+                }
+                catch
+                {
+
+
+                }
+            }
+
+            connection.Close();
+        }
+
+        private static int GetPercent(int roomId, string appName)
+        {
+            int count = 0;
+
+            int total = 0;
+
+            var connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+
+            var db = new QueryFactory(connection, new MySqlCompiler());
+
+            db.Logger = compiled =>
+            {
+                Console.WriteLine(compiled.ToString());
+            };
+
+            var roomCount = db.Query("RankInfo")
+                .Select("AppName")
+                .SelectRaw("count(*) as Count")
+                .Where("RoomId", "=", roomId)
+                .GroupBy("AppName")
+                .Get<RoomCount>();
+
+            foreach (var room in roomCount)
+            {
+                total += room.Count;
+
+                if (room.AppName == appName)
+                {
+                    count = room.Count;
+                }
+            }
+
+            connection.Close();
+
+            int percent = (int)(((double)count / total) * 100);
+
+            return percent;
+        }
+
+        private static void UpdatePercent(int roomId, string appName, int percent)
+        {
+            var connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
+
+            var db = new QueryFactory(connection, new MySqlCompiler());
+
+            db.Logger = compiled =>
+            {
+                Console.WriteLine(compiled.ToString());
+            };
+
+            int affected = db.Query("RankInfo")
+                .Where("RoomId", "=", roomId)
+                .Where("AppName", "=", appName)
+                .Where("AppPercent", "=", 0)
+                .Update(new { AppPercent = percent });
+
+            connection.Close();
         }
 
         private static string getWeb(string url)

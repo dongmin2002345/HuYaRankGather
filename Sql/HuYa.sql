@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主机： 9.3.211.35:14674
--- 生成日期： 2019-12-10 20:47:07
+-- 生成日期： 2019-12-13 10:54:50
 -- 服务器版本： 5.7.18-txsql-log
 -- PHP 版本： 5.6.30
 
@@ -39,6 +39,7 @@ CREATE TABLE `RankInfo` (
   `RoomTitle` varchar(50) NOT NULL COMMENT '房间标题',
   `RoomOnline` int(11) NOT NULL COMMENT '房间在线人数',
   `AppName` varchar(50) NOT NULL COMMENT '直播分类',
+  `AppPercent` int(11) NOT NULL DEFAULT '0' COMMENT '分类所占百分比',
   `LogTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
