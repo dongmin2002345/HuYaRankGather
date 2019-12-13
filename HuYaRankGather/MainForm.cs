@@ -60,10 +60,10 @@ namespace HuYaRankGather
             registry.Schedule(() => FansTask("二次元", 100000)).NonReentrant().ToRunEvery(1).Days().At(3, 0);
 
             //每天4:00点执行
-            registry.Schedule(() => PercentTask("颜值", 100000, 100000)).NonReentrant().ToRunEvery(1).Days().At(4, 0);
+            registry.Schedule(() => PercentTask("星秀", 100000, 100000)).NonReentrant().ToRunEvery(1).Days().At(4, 0);
 
             //每天4:30点执行
-            registry.Schedule(() => PercentTask("舞蹈", 100000, 100000)).NonReentrant().ToRunEvery(1).Days().At(4, 30);
+            registry.Schedule(() => PercentTask("颜值", 100000, 100000)).NonReentrant().ToRunEvery(1).Days().At(4, 30);
 
             //每天5:00点执行
             registry.Schedule(() => PercentTask("二次元", 100000, 100000)).NonReentrant().ToRunEvery(1).Days().At(5, 0);
